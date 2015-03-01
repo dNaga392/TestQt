@@ -1,0 +1,53 @@
+# This gitignore based on follows:
+# https://github.com/github/gitignore/blob/master/Qt.gitignore
+# 
+# Thanks for Jake Petroules.
+
+# C++ objects and libs
+
+*.slo
+*.lo
+*.o
+*.a
+*.la
+*.lai
+*.so
+*.dll
+*.dylib
+
+# Qt-es
+
+/.qmake.cache
+/.qmake.stash
+*.pro.user
+*.pro.user.*
+*.qbs.user
+*.qbs.user.*
+*.moc
+moc_*.cpp
+qrc_*.cpp
+ui_*.h
+Makefile*
+*-build-*
+
+# QtCreator
+
+*.autosave
+
+# QtCtreator Qml
+*.qmlproject.user
+*.qmlproject.user.*
+
+# =========================
+# User settings
+# =========================
+# batch files (for debug and release).
+*.bat
+# debug directory
+[Dd]ebug/
+# release directory
+[Rr]elease/
+## data directory
+#[Dd]ata/
+# result data directory
+[Rr]esult/
