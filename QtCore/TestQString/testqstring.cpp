@@ -1,6 +1,8 @@
 // QStringのテスト
 // testqstring.cpp
 
+#include <string>
+
 #include <QtTest/QtTest>
 
 class TestQString: public QObject
@@ -19,7 +21,43 @@ private slots:
 // QString QString::toUpper() const
 	void toUpper();
 	void toUpper_data();
+	
+	void fromStdString();
+	void toStdString();
 };
+
+/// QString from std::string
+void TestQString::fromStdString()/*{{{*/
+{
+	std::string str;
+	QString qstr;
+	
+	str = "hoge";
+	qstr = QString::fromStdString(str);
+	
+	QString expected("hoge");
+
+	// 式を評価
+	QCOMPARE( qstr, expected );
+	QCOMPARE( qstr, expected );
+}/*}}}*/
+/// QString to std::string
+void TestQString::toStdString()/*{{{*/
+{
+	std::string str;
+	QString qstr;
+	
+	qstr = "hoge";
+	str = qstr.toLocal8Bit().constData();
+	
+	std::string expected("hoge");
+
+	QVERIFY( str == expected );
+	QVERIFY( str == expected );
+
+	std::string wrong("hoge!");
+	QVERIFY( str != wrong );
+}/*}}}*/
 
 // bool QString::contains ( const QString & str, Qt::CaseSensitivity cs = Qt::CaseSensitive ) const
 // テスト部
