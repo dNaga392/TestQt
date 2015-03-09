@@ -24,6 +24,8 @@ private slots:
 	
 	void fromStdString();
 	void toStdString();
+	void numberDouble();
+	void numberDouble_data();
 };
 
 /// QString from std::string
@@ -152,6 +154,34 @@ void TestQString::toUpper_data()/*{{{*/
 	QTest::newRow("all lower") << "hello" << "HELLO";
 	QTest::newRow("mixed")     << "Hello" << "HELLO";
 	QTest::newRow("all upper") << "HELLO" << "HELLO";
+}/*}}}*/
+
+// テスト部
+void TestQString::numberDouble()/*{{{*/
+{
+	// タイトルからテストデータの取得
+	QFETCH(double, n);
+	QFETCH(char, format);
+	QFETCH(int, precision);
+	QFETCH(QString, num);
+
+	QString actual = QString::number( n, format, precision );
+	QCOMPARE( actual, num );
+}/*}}}*/
+// データセット部
+void TestQString::numberDouble_data()/*{{{*/
+{
+	// テストデータのタイトル設定
+	QTest::addColumn<double>("n");
+	QTest::addColumn<char>("format");
+	QTest::addColumn<int>("precision");
+	QTest::addColumn<QString>("num");
+	
+	// テストセット登録
+	QTest::newRow("case 3") << 3.14159265 << 'f' << 3 << "3.142"; // 四捨五入される
+	QTest::newRow("case 4") << 3.14159265 << 'f' << 4 << "3.1416";
+	QTest::newRow("case 5") << 3.14159265 << 'f' << 5 << "3.14159";
+	QTest::newRow("case 6") << 3.14159265 << 'f' << 6 << "3.141593";
 }/*}}}*/
 
 QTEST_MAIN(TestQString)
