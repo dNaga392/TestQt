@@ -82,6 +82,7 @@ void TestQDataStream::readRawData_data()/*{{{*/
 	QTest::newRow("case 2") << 0x06221129 << 0x0622 << 2;
 	QTest::newRow("case 3") << 0x06221129 << 0x062211 << 3;
 	QTest::newRow("case 4") << 0x06221129 << 0x06221129 << 4;
+	QTest::newRow("case 4b") << 0x06221100 << 0x06221100 << 4;
 }/*}}}*/
 
 QTEST_MAIN(TestQDataStream)
