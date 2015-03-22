@@ -7,14 +7,17 @@
 #include <QDir>
 #include <QFile>
 #include <QString>
+#include <QMap>
 
-class TestQDataStream: public QObject
+/// QDataStream のテストクラス
+class TestQDataStream: public QObject/*{{{*/
 {
 	Q_OBJECT
 private slots:
 	void readRawData();
 	void readRawData_data();
-};
+	void ioQMap();
+};/*}}}*/
 
 void TestQDataStream::readRawData()/*{{{*/
 {
@@ -83,6 +86,62 @@ void TestQDataStream::readRawData_data()/*{{{*/
 	QTest::newRow("case 3") << 0x06221129 << 0x062211 << 3;
 	QTest::newRow("case 4") << 0x06221129 << 0x06221129 << 4;
 	QTest::newRow("case 4b") << 0x06221100 << 0x06221100 << 4;
+}/*}}}*/
+
+void TestQDataStream::ioQMap()/*{{{*/
+{
+	QMap<QString, QString> dataMap;
+	dataMap.insert("KEY1", "VAL1");
+	dataMap.insert("KEY2", "VAL2");
+	dataMap.insert("KEY3", "VAL3");
+	
+	QString dirPath = QDir::currentPath();
+	QString fileName = "ioMap_test.dat";
+	QString filePath = QString( "%1/%2" ).arg( dirPath ).arg( fileName );
+
+	// write
+	QFile outFile( filePath );
+	if ( !outFile.open( QIODevice::WriteOnly ) )
+	{
+		qDebug() << "[Error] Failed open file to write.";
+		return;
+	}
+	QDataStream out ( &outFile );
+	out << dataMap;
+
+	outFile.close();
+
+	// read
+	QFile inFile( filePath );
+	if ( !inFile.open( QIODevice::ReadOnly ) )
+	{
+		qDebug() << "[Error] Failed open file to read.";
+		return;
+	}
+
+	QDataStream in ( &inFile );
+
+	QMap<QString, QString> resultMap;
+
+	in >> resultMap;
+
+	inFile.close();
+
+	// 式を評価
+	QCOMPARE( resultMap.keys().size(), dataMap.keys().size() );
+	Q_ASSERT( resultMap.keys().size() == dataMap.keys().size() );
+	//qDebug("%s, %d: resultKeysSize=[%d], dataKeysSize=[%d]", __FILE__, __LINE__, resultMap.keys().size(), dataMap.keys().size());
+
+	for ( int i = 0; i < resultMap.keys().size(); ++i )
+	{
+		QString dataKey = dataMap.keys().at(i);
+		QString resultKey = resultMap.keys().at(i);
+	//qDebug("%s, %d: resultKey=[%s], dataKey=[%s]", __FILE__, __LINE__, qPrintable(resultKey), qPrintable(dataKey));
+		QCOMPARE( resultKey, dataKey );
+		Q_ASSERT( resultKey == dataKey );
+	//qDebug("%s, %d: resultVal=[%s], dataVal=[%s]", __FILE__, __LINE__, qPrintable(resultMap.value( resultKey )), qPrintable(dataMap.value( dataKey )));
+		QCOMPARE( resultMap.value( resultKey ), dataMap.value( dataKey ) );
+	}
 }/*}}}*/
 
 QTEST_MAIN(TestQDataStream)
