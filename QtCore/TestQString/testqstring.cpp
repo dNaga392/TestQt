@@ -18,16 +18,61 @@ private slots:
 // bool QString::contains ( QRegExp & rx ) const
 	void containsQRegExp();
 	void containsQRegExp_data();
-// QString QString::toUpper() const
+
+	// QString QString::toUpper() const
+	///	QString::toUpper() のテスト
 	void toUpper();
+	///	QString::toUpper() のテストデータセット
 	void toUpper_data();
 	
+	///	std::string から QString への変換テスト
 	void fromStdString();
+	///	QString から std::string への変換テスト
 	void toStdString();
 	void numberDouble();
 	void numberDouble_data();
+	/// 
+	void testcommondirectorypath();
+	void testcommondirectorypath_data();
 };
 
+/// 共通のフォルダパスを取得する
+void TestQString::testcommondirectorypath()/*{{{*/
+{
+	// タイトルからテストデータの取得
+	QFETCH(QString, path1);
+	QFETCH(QString, path2);
+	QFETCH(QString, common);
+
+	QString ret = path2;
+	QString result;
+
+	while ( !path1.startsWith( ret ) )
+		ret.chop(1);
+
+	if ( ret.isEmpty() )
+		result = QString();
+
+	while ( ret.endsWith('/') )
+		ret.chop(1);
+
+	result = ret;
+
+	// 式を評価
+	QCOMPARE( result, common );
+}/*}}}*/
+void TestQString::testcommondirectorypath_data()/*{{{*/
+{
+	QTest::addColumn<QString>("path1");
+	QTest::addColumn<QString>("path2");
+	QTest::addColumn<QString>("common");
+	
+	// テストセット登録
+	QTest::newRow("example") << "C:/Documents" << "C:/Pictures" << "C:";
+	QTest::newRow("example") << "C:/Documents/Excel" << "C:/Pictures/201502" << "C:";
+	QTest::newRow("example") << "C:/Pictures/iPhone" << "C:/Pictures/201502" << "C:/Pictures";
+	QTest::newRow("example") << "C:/Pictures/201502" << "C:/Pictures/201502" << "C:/Pictures/201502";
+}/*}}}*/
 /// QString from std::string
 void TestQString::fromStdString()/*{{{*/
 {
