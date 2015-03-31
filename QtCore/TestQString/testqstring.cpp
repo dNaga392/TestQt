@@ -34,6 +34,8 @@ private slots:
 	/// 
 	void testcommondirectorypath();
 	void testcommondirectorypath_data();
+	void testsetnumdouble();
+	void testsetnumdouble_data();
 };
 
 /// 共通のフォルダパスを取得する
@@ -216,6 +218,36 @@ void TestQString::numberDouble()/*{{{*/
 }/*}}}*/
 // データセット部
 void TestQString::numberDouble_data()/*{{{*/
+{
+	// テストデータのタイトル設定
+	QTest::addColumn<double>("n");
+	QTest::addColumn<char>("format");
+	QTest::addColumn<int>("precision");
+	QTest::addColumn<QString>("num");
+	
+	// テストセット登録
+	QTest::newRow("case 3") << 3.14159265 << 'f' << 3 << "3.142"; // 四捨五入される
+	QTest::newRow("case 4") << 3.14159265 << 'f' << 4 << "3.1416";
+	QTest::newRow("case 5") << 3.14159265 << 'f' << 5 << "3.14159";
+	QTest::newRow("case 6") << 3.14159265 << 'f' << 6 << "3.141593";
+	QTest::newRow("case 14") << 1.0/3.0 << 'g' << 14 << "0.33333333333333";
+}/*}}}*/
+
+// テスト部
+void TestQString::testsetnumdouble()/*{{{*/
+{
+	// タイトルからテストデータの取得
+	QFETCH(double, n);
+	QFETCH(char, format);
+	QFETCH(int, precision);
+	QFETCH(QString, num);
+
+	QString actual;
+	actual.setNum( n, format, precision );
+	QCOMPARE( actual, num );
+}/*}}}*/
+// データセット部
+void TestQString::testsetnumdouble_data()/*{{{*/
 {
 	// テストデータのタイトル設定
 	QTest::addColumn<double>("n");
