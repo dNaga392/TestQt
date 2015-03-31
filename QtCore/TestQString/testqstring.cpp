@@ -228,6 +228,7 @@ void TestQString::numberDouble_data()/*{{{*/
 	QTest::newRow("case 4") << 3.14159265 << 'f' << 4 << "3.1416";
 	QTest::newRow("case 5") << 3.14159265 << 'f' << 5 << "3.14159";
 	QTest::newRow("case 6") << 3.14159265 << 'f' << 6 << "3.141593";
+	QTest::newRow("case 14") << 1.0/3.0 << 'g' << 14 << "0.33333333333333";
 }/*}}}*/
 
 QTEST_MAIN(TestQString)
