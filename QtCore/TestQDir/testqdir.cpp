@@ -1,10 +1,14 @@
-// QDirのテスト
-// testqdir.cpp
+///	@file	testqdir.cpp
+///	@brief	QDirのテスト
 
 #include <QtTest/QtTest>
 #include <QtCore/QDir>
 
-class TestQDir: public QObject
+#include <QtCore/QStringList>
+
+///	QDirのテストクラス
+class TestQDir/*{{{*/
+	: public QObject
 {
 	Q_OBJECT
 private slots:
@@ -14,8 +18,68 @@ private slots:
 	void testcleanabsolutefilepath_data();
 	void testpath();
 	void testpath_data();
-};
+	void alldirstopdown();
+	///	トップダウンで、フォルダパス一覧を取得
+	void alldirstopdownwithcurrent();
+#ifdef QT_DEBUG
+	/// [DEBUG]QStringListのダンプ
+	bool dumpQStringList( QStringList & list, QString & fileName );
+#endif
+};/*}}}*/
 
+void TestQDir::alldirstopdown()/*{{{*/
+{
+	QString parent_folder;
+	//parent_folder = "C:/Pictures";
+	parent_folder = QDir::currentPath();
+	QDir dir = QDir(parent_folder);
+	dir.cdUp();
+	parent_folder = dir.path();
+	QStringList all_dirs;
+	//all_dirs << parent_folder;
+    QDirIterator directories(parent_folder, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+ 
+    while(directories.hasNext()){
+        directories.next();
+        all_dirs << directories.filePath();
+    }
+	QVERIFY( !all_dirs.contains( parent_folder ) );
+	int nResultCount = all_dirs.count();
+	all_dirs.removeDuplicates();
+	QCOMPARE( nResultCount, all_dirs.count() );
+#ifdef QT_DEBUG
+	QString strFileName;
+	strFileName = QString("%1/%2").arg(parent_folder).arg("alldirstopdown.txt");
+	dumpQStringList( all_dirs, strFileName );
+#endif
+}/*}}}*/
+
+void TestQDir::alldirstopdownwithcurrent()/*{{{*/
+{
+	QString parent_folder;
+	//parent_folder = "C:/Pictures";
+	parent_folder = QDir::currentPath();
+	QDir dir = QDir(parent_folder);
+	dir.cdUp();
+	parent_folder = dir.path();
+	QStringList all_dirs;
+	all_dirs << parent_folder;
+    QDirIterator directories(parent_folder, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+ 
+    while(directories.hasNext()){
+        directories.next();
+        all_dirs << directories.filePath();
+    }
+	QVERIFY( all_dirs.contains( parent_folder ) );
+	int nResultCount = all_dirs.count();
+	all_dirs.removeDuplicates();
+	QCOMPARE( nResultCount, all_dirs.count() );
+#ifdef QT_DEBUG
+	QString strFileName;
+	strFileName = QString("%1/%2").arg(parent_folder).arg("alldirstopdownwithcurrent.txt");
+	dumpQStringList( all_dirs, strFileName );
+#endif
+}/*}}}*/
 /// QDir::mkpath() のテスト
 void TestQDir::testmkpath()/*{{{*/
 {
@@ -107,6 +171,31 @@ void TestQDir::testpath_data()/*{{{*/
 	QTest::newRow("case dir path with sep") << "C:/Data/" << "C:/Data";
 	//QTest::newRow("case file path") << "C:/Data/ie6.png" << "C:/Data"; //FAIL!
 }/*}}}*/
+
+#ifdef QT_DEBUG
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+
+/// [DEBUG]QStringListのダンプ
+bool TestQDir::dumpQStringList( QStringList & list, QString & fileName )/*{{{*/
+{
+	QFile file(fileName);
+	bool bRet = file.open(QIODevice::WriteOnly);
+	if (!bRet) {
+		// ERROR
+		qDebug("%s, %d: [Error] file is not opened.", __FILE__, __LINE__);
+		return false;
+	}
+	QTextStream out(&file);
+	foreach(QString text, list)
+	{
+		out << text << endl;
+	}
+	file.close();
+	return true;
+}/*}}}*/
+
+#endif
 
 QTEST_MAIN(TestQDir)
 #include "testqdir.moc"

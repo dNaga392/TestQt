@@ -8,13 +8,29 @@ class TestQRegExp: public QObject
 {
 	Q_OBJECT
 private slots:
+
 // int QRegExp::indexIn ( const QString & str, int offset = 0, CaretMode caretMode = CaretAtZero ) const
+
 	void indexIn();
 	void indexIn_data();
 // bool QRegExp::isValid () const
 	void isValid();
 	void isValid_data();
+	void testexactmatch();
 };
+
+void TestQRegExp::testexactmatch()
+{
+	QString str;
+	QString pat;
+
+	str = "201502E4-001.jpg";
+	pat = "201502E4(.+)";
+
+	QRegExp rx(pat);
+
+	QVERIFY( rx.exactMatch( str ) );
+}
 
 // int QRegExp::indexIn ( const QString & str, int offset = 0, CaretMode caretMode = CaretAtZero ) const
 // ƒeƒXƒg•”

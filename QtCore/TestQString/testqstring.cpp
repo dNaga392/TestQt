@@ -167,6 +167,7 @@ void TestQString::containsQRegExp_data()/*{{{*/
 	QTest::newRow("example1") << "2012/06/30 13:45:30" << QRegExp("..../../.. ..:..:..") << true;
 	QTest::newRow("example2") << "2012/06/30 13:45:30" << QRegExp("..:..:..") << true;
 	QTest::newRow("example3") << "2012/06/30 13:45:30" << QRegExp("www") << false;
+	QTest::newRow("case dat file") << "201502E4-001.png" << QRegExp("201502E4(.+)") << true;
 }/*}}}*/
 
 // void QString::toUpper()
