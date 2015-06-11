@@ -141,7 +141,7 @@ void	TestQPainter::QPainter_drawText_withRotation()/*{{{*/
 	//device = painter.device();
 	//Q_CHECK_PTR( device );
 	//QPoint rotated_center( device->width() / 2, device->height() / 2 );
-	QPoint rotated_center(rotational_conversion( center_point, angle ) );
+	QPoint rotated_center( rotational_conversion( center_point, angle ) );
 	QPoint rotated_point( rotated_shift.x() + rotated_center.x(), rotated_shift.y() + rotated_center.y() );
 
 	painter.drawText( rotated_point, text );
