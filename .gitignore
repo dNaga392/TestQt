@@ -42,7 +42,7 @@ Makefile*
 # User settings
 # =========================
 # batch files (for debug and release).
-*.bat
+#*.bat
 # debug directory
 [Dd]ebug/
 # release directory
