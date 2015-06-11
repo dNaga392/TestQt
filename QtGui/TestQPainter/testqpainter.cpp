@@ -1,7 +1,7 @@
-///==========================================
-///	@brief	QPainterのテスト
+///============================================================
 ///	@file	testqpainter.cpp
-///==========================================
+///	@brief	QPainterのテスト
+///============================================================
 
 #include <QtTest/QtTest>
 
@@ -130,8 +130,8 @@ void	TestQPainter::QPainter_drawText_withRotation()/*{{{*/
 	painter.drawLine( center_point.x(), 0, center_point.x(), device->height() );
 	painter.restore();
 
+	painter.save();
 	painter.rotate( angle * ( -1 ) );
-
 
 	// 変換先の描画点を計算
 	QPoint shift_point( draw_point.x() - center_point.x(), draw_point.y() - center_point.y() );
@@ -149,7 +149,8 @@ void	TestQPainter::QPainter_drawText_withRotation()/*{{{*/
 	qDebug() << "rotated_center : " << rotated_center;
 	qDebug() << "rotated_point : " << rotated_point;
 
-	painter.rotate( angle * ( -1 ) );
+	//painter.rotate( angle );
+	painter.restore();
 
 	pix.save( "QPainter_drawText_withRotation.bmp" );
 }/*}}}*/
@@ -191,8 +192,8 @@ void	TestQPainter::QPainter_drawStaticText_withRotation()/*{{{*/
 	painter.drawLine( center_point.x(), 0, center_point.x(), device->height() );
 	painter.restore();
 
+	painter.save();
 	painter.rotate( angle * ( -1 ) );
-
 
 	// 変換先の描画点を計算
 	QPoint shift_point( draw_point.x() - center_point.x(), draw_point.y() - center_point.y() );
@@ -210,7 +211,8 @@ void	TestQPainter::QPainter_drawStaticText_withRotation()/*{{{*/
 	qDebug() << "rotated_center : " << rotated_center;
 	qDebug() << "rotated_point : " << rotated_point;
 
-	painter.rotate( angle * ( -1 ) );
+	//painter.rotate( angle );
+	painter.restore();
 
 	pix.save( "QPainter_drawStaticText_withRotation.bmp" );
 }/*}}}*/
