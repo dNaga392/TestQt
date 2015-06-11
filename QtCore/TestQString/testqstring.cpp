@@ -8,7 +8,9 @@
 class TestQString: public QObject
 {
 	Q_OBJECT
+
 private slots:
+	void initTestCase();
 // bool QString::contains ( const QString & str, Qt::CaseSensitivity cs = Qt::CaseSensitive ) const
 	void containsQString();
 	void containsQString_data();
@@ -36,7 +38,26 @@ private slots:
 	void testcommondirectorypath_data();
 	void testsetnumdouble();
 	void testsetnumdouble_data();
+	void length();
 };
+
+void TestQString::initTestCase()/*{{{*/
+{
+	QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
+}/*}}}*/
+
+void TestQString::length()/*{{{*/
+{
+	QString str = "Ⅳ";
+
+	int nLen = str.length();
+	// 式を評価
+	QCOMPARE( nLen, 1 );
+
+	QByteArray ba = str.toLocal8Bit().constData();
+	nLen = ba.length();
+	QCOMPARE( nLen, 2 );
+}/*}}}*/
 
 /// 共通のフォルダパスを取得する
 void TestQString::testcommondirectorypath()/*{{{*/
@@ -231,6 +252,10 @@ void TestQString::numberDouble_data()/*{{{*/
 	QTest::newRow("case 5") << 3.14159265 << 'f' << 5 << "3.14159";
 	QTest::newRow("case 6") << 3.14159265 << 'f' << 6 << "3.141593";
 	QTest::newRow("case 14") << 1.0/3.0 << 'g' << 14 << "0.33333333333333";
+	QTest::newRow("case z3") << 3.00000000 << 'f' << 3 << "3.000"; // 0は残る
+	QTest::newRow("case z4") << 3.00000000 << 'f' << 4 << "3.0000";
+	QTest::newRow("case z5") << 3.00000000 << 'f' << 5 << "3.00000";
+	QTest::newRow("case z6") << 3.00000000 << 'f' << 6 << "3.000000";
 }/*}}}*/
 
 // テスト部
@@ -261,6 +286,10 @@ void TestQString::testsetnumdouble_data()/*{{{*/
 	QTest::newRow("case 5") << 3.14159265 << 'f' << 5 << "3.14159";
 	QTest::newRow("case 6") << 3.14159265 << 'f' << 6 << "3.141593";
 	QTest::newRow("case 14") << 1.0/3.0 << 'g' << 14 << "0.33333333333333";
+	QTest::newRow("case z3") << 3.00000000 << 'f' << 3 << "3.000"; // 0は残る
+	QTest::newRow("case z4") << 3.00000000 << 'f' << 4 << "3.0000";
+	QTest::newRow("case z5") << 3.00000000 << 'f' << 5 << "3.00000";
+	QTest::newRow("case z6") << 3.00000000 << 'f' << 6 << "3.000000";
 }/*}}}*/
 
 QTEST_MAIN(TestQString)
