@@ -1,5 +1,7 @@
+///============================================================
 ///	@file	testqdir.cpp
 ///	@brief	QDirのテスト
+///============================================================
 
 #include <QtTest/QtTest>
 #include <QtCore/QDir>
@@ -11,7 +13,10 @@ class TestQDir/*{{{*/
 	: public QObject
 {
 	Q_OBJECT
+
 private slots:
+	///	テストケースの初期設定をします。
+	void initTestCase();
 	void testmkpath();
 	void testmkpath_data();
 	void testcleanabsolutefilepath();
@@ -26,6 +31,26 @@ private slots:
 	bool dumpQStringList( QStringList & list, QString & fileName );
 #endif
 };/*}}}*/
+//#include "../Plugin/Dialog/FileListDialog.h"
+//	QString parent_folder = QDir::currentPath();
+//QStringList all_dirs;
+//    all_dirs << parent_folder;
+//    QDirIterator directories(parent_folder, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+// 
+//    while(directories.hasNext() ){
+//        directories.next();
+//        all_dirs << directories.filePath();
+//    }
+//	FileListDialog dlg;
+//	dlg.setFileNames( all_dirs );
+//	dlg.exec();
+
+///	@brief	テストケースの初期設定をします。
+void TestQMessageBox::initTestCase()/*{{{*/
+{
+	// 日本語対応
+	QTextCodec::setCodecForCStrings( QTextCodec::codecForLocale() );
+}/*}}}*/
 
 void TestQDir::alldirstopdown()/*{{{*/
 {
