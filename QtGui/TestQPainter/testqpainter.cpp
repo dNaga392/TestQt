@@ -131,22 +131,20 @@ void	TestQPainter::QPainter_drawText_withRotation()/*{{{*/
 	painter.restore();
 
 	painter.save();
+	// 文字の向きとは逆に回転させる
 	painter.rotate( angle * ( -1 ) );
 
 	// 変換先の描画点を計算
-	QPoint shift_point( draw_point.x() - center_point.x(), draw_point.y() - center_point.y() );
-	QPoint rotated_shift( rotational_conversion( shift_point, angle ) );
-
-	// 元のデバイスサイズのため意味なし
-	//device = painter.device();
-	//Q_CHECK_PTR( device );
-	//QPoint rotated_center( device->width() / 2, device->height() / 2 );
-	QPoint rotated_center( rotational_conversion( center_point, angle ) );
-	QPoint rotated_point( rotated_shift.x() + rotated_center.x(), rotated_shift.y() + rotated_center.y() );
+	// rotate()はデバイス中心ではなく、原点(0,0)による回転。そのため、デバイス中心による補正は不要
+	//QPoint shift_point( draw_point.x() - center_point.x(), draw_point.y() - center_point.y() );
+	//QPoint rotated_shift( rotational_conversion( shift_point, angle ) );
+	//QPoint rotated_center( rotational_conversion( center_point, angle ) );
+	//QPoint rotated_point( rotated_shift.x() + rotated_center.x(), rotated_shift.y() + rotated_center.y() );
+	QPoint rotated_point( rotational_conversion( draw_point, angle ) );
 
 	painter.drawText( rotated_point, text );
-	qDebug() << "rotated_shift : " << rotated_shift;
-	qDebug() << "rotated_center : " << rotated_center;
+	//qDebug() << "rotated_shift : " << rotated_shift;
+	//qDebug() << "rotated_center : " << rotated_center;
 	qDebug() << "rotated_point : " << rotated_point;
 
 	//painter.rotate( angle );
@@ -159,7 +157,6 @@ void	TestQPainter::QPainter_drawStaticText_withRotation()/*{{{*/
 {
 	QSize pix_size( 300, 200 );
 	QPixmap pix( pix_size );
-//	pix.fill( QColor( RGB_GREEN ) );
 
 	QPainter painter( &pix );
 
@@ -193,22 +190,20 @@ void	TestQPainter::QPainter_drawStaticText_withRotation()/*{{{*/
 	painter.restore();
 
 	painter.save();
+	// 文字の向きとは逆に回転させる
 	painter.rotate( angle * ( -1 ) );
 
 	// 変換先の描画点を計算
-	QPoint shift_point( draw_point.x() - center_point.x(), draw_point.y() - center_point.y() );
-	QPoint rotated_shift( rotational_conversion( shift_point, angle ) );
-
-	// 元のデバイスサイズのため意味なし
-	//device = painter.device();
-	//Q_CHECK_PTR( device );
-	//QPoint rotated_center( device->width() / 2, device->height() / 2 );
-	QPoint rotated_center(rotational_conversion( center_point, angle ) );
-	QPoint rotated_point( rotated_shift.x() + rotated_center.x(), rotated_shift.y() + rotated_center.y() );
+	// rotate()はデバイス中心ではなく、原点(0,0)による回転。そのため、デバイス中心による補正は不要
+	//QPoint shift_point( draw_point.x() - center_point.x(), draw_point.y() - center_point.y() );
+	//QPoint rotated_shift( rotational_conversion( shift_point, angle ) );
+	//QPoint rotated_center( rotational_conversion( center_point, angle ) );
+	//QPoint rotated_point( rotated_shift.x() + rotated_center.x(), rotated_shift.y() + rotated_center.y() );
+	QPoint rotated_point( rotational_conversion( draw_point, angle ) );
 
 	painter.drawStaticText( rotated_point, QStaticText( text ) );
-	qDebug() << "rotated_shift : " << rotated_shift;
-	qDebug() << "rotated_center : " << rotated_center;
+	//qDebug() << "rotated_shift : " << rotated_shift;
+	//qDebug() << "rotated_center : " << rotated_center;
 	qDebug() << "rotated_point : " << rotated_point;
 
 	//painter.rotate( angle );
