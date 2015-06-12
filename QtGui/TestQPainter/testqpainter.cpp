@@ -52,13 +52,13 @@ private:
 
 QPoint	TestQPainter::rotational_conversion( const QPoint & point, int angle )/*{{{*/
 {
-	qDebug() << "angle =" << angle;
+	//qDebug() << "angle =" << angle;
 	angle %= 360;
 	if ( angle < 0 )
 	{
 		angle += 360;
 	}
-	qDebug() << "angle =" << angle;
+	//qDebug() << "angle =" << angle;
 
 	int x;
 	int y;
@@ -85,19 +85,17 @@ QPoint	TestQPainter::rotational_conversion( const QPoint & point, int angle )/*{
 	else
 	{
 		double radian = angle * PI / 180;
-		x = (int)( (double)point.x() * cos( radian ) - (double)point.y() * sin( radian ) );
-		y = (int)( (double)point.x() * sin( radian ) + (double)point.y() * cos( radian ) );
+		x = (int)( point.x() * cos( radian ) - point.y() * sin( radian ) );
+		y = (int)( point.x() * sin( radian ) + point.y() * cos( radian ) );
 	}
 
-	QPoint rotated( x, y );
-	return rotated;
+	return QPoint( x, y );
 }/*}}}*/
 
 void	TestQPainter::QPainter_drawText_withRotation()/*{{{*/
 {
 	QSize pix_size( 300, 200 );
 	QPixmap pix( pix_size );
-//	pix.fill( QColor( RGB_GREEN ) );
 
 	QPainter painter( &pix );
 
@@ -114,40 +112,35 @@ void	TestQPainter::QPainter_drawText_withRotation()/*{{{*/
 	int angle = 90; // 度
 	// 描画点
 	QPoint draw_point( 50, 100 );
-	QPoint center_point( device->width() / 2, device->height() / 2 );
 	// 描画点補助線描画
 	painter.save();
 	painter.setPen( QColor( RGB_RED ) );
 	painter.drawLine( 0, draw_point.y(), device->width(), draw_point.y() );
 	painter.drawLine( draw_point.x(), 0, draw_point.x(), device->height() );
 	painter.restore();
-	// 中心テキスト描画
-	painter.drawText( center_point, "center" );
+	// 中心点
+	QPoint center_point( device->width() / 2, device->height() / 2 );
 	// 中心点補助線描画
 	painter.save();
 	painter.setPen( QColor( RGB_GREEN ) );
 	painter.drawLine( 0, center_point.y(), device->width(), center_point.y() );
 	painter.drawLine( center_point.x(), 0, center_point.x(), device->height() );
 	painter.restore();
+	// 中心テキスト描画
+	painter.drawText( center_point, "center" );
 
-	painter.save();
 	// 文字の向きとは逆に回転させる
+	painter.save();
 	painter.rotate( angle * ( -1 ) );
 
 	// 変換先の描画点を計算
-	// rotate()はデバイス中心ではなく、原点(0,0)による回転。そのため、デバイス中心による補正は不要
-	//QPoint shift_point( draw_point.x() - center_point.x(), draw_point.y() - center_point.y() );
-	//QPoint rotated_shift( rotational_conversion( shift_point, angle ) );
-	//QPoint rotated_center( rotational_conversion( center_point, angle ) );
-	//QPoint rotated_point( rotated_shift.x() + rotated_center.x(), rotated_shift.y() + rotated_center.y() );
 	QPoint rotated_point( rotational_conversion( draw_point, angle ) );
+	//qDebug() << "rotated_point : " << rotated_point;
 
+	// テキストを描画
 	painter.drawText( rotated_point, text );
-	//qDebug() << "rotated_shift : " << rotated_shift;
-	//qDebug() << "rotated_center : " << rotated_center;
-	qDebug() << "rotated_point : " << rotated_point;
 
-	//painter.rotate( angle );
+	// 回転リストア
 	painter.restore();
 
 	pix.save( "QPainter_drawText_withRotation.bmp" );
@@ -173,40 +166,35 @@ void	TestQPainter::QPainter_drawStaticText_withRotation()/*{{{*/
 	int angle = 90; // 度
 	// 描画点
 	QPoint draw_point( 50, 100 );
-	QPoint center_point( device->width() / 2, device->height() / 2 );
 	// 描画点補助線描画
 	painter.save();
 	painter.setPen( QColor( RGB_RED ) );
 	painter.drawLine( 0, draw_point.y(), device->width(), draw_point.y() );
 	painter.drawLine( draw_point.x(), 0, draw_point.x(), device->height() );
 	painter.restore();
-	// 中心テキスト描画
-	painter.drawText( center_point, "center" );
+	// 中心点
+	QPoint center_point( device->width() / 2, device->height() / 2 );
 	// 中心点補助線描画
 	painter.save();
 	painter.setPen( QColor( RGB_GREEN ) );
 	painter.drawLine( 0, center_point.y(), device->width(), center_point.y() );
 	painter.drawLine( center_point.x(), 0, center_point.x(), device->height() );
 	painter.restore();
+	// 中心テキスト描画
+	painter.drawStaticText( center_point, QStaticText( "center" ) );
 
-	painter.save();
 	// 文字の向きとは逆に回転させる
+	painter.save();
 	painter.rotate( angle * ( -1 ) );
 
 	// 変換先の描画点を計算
-	// rotate()はデバイス中心ではなく、原点(0,0)による回転。そのため、デバイス中心による補正は不要
-	//QPoint shift_point( draw_point.x() - center_point.x(), draw_point.y() - center_point.y() );
-	//QPoint rotated_shift( rotational_conversion( shift_point, angle ) );
-	//QPoint rotated_center( rotational_conversion( center_point, angle ) );
-	//QPoint rotated_point( rotated_shift.x() + rotated_center.x(), rotated_shift.y() + rotated_center.y() );
 	QPoint rotated_point( rotational_conversion( draw_point, angle ) );
+	//qDebug() << "rotated_point : " << rotated_point;
 
+	// テキストを描画
 	painter.drawStaticText( rotated_point, QStaticText( text ) );
-	//qDebug() << "rotated_shift : " << rotated_shift;
-	//qDebug() << "rotated_center : " << rotated_center;
-	qDebug() << "rotated_point : " << rotated_point;
 
-	//painter.rotate( angle );
+	// 回転リストア
 	painter.restore();
 
 	pix.save( "QPainter_drawStaticText_withRotation.bmp" );
