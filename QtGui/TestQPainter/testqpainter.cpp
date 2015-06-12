@@ -4,8 +4,8 @@
 ///============================================================
 
 #include <QtTest/QtTest>
-
 #include <QtGui/QPainter>
+
 #include <QStaticText>
 
 #define RGB_WHITE	QColor( 0xFF, 0xFF, 0xFF ).rgb()
