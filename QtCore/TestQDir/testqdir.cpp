@@ -1,14 +1,21 @@
-///============================================================
+///===================================================================
 ///	@file	testqdir.cpp
 ///	@brief	QDirのテスト
-///============================================================
+///	@date	2015/03/25 作成
+///===================================================================
 
 #include <QtTest/QtTest>
 #include <QtCore/QDir>
 
 #include <QtCore/QStringList>
 
-///	QDirのテストクラス
+#ifdef QT_DEBUG
+#define DUMP_DEBUG
+#endif // QT_DEBUG
+
+/*! ******************************************************************
+	@brief	QDirのテストクラス
+******************************************************************* */
 class TestQDir/*{{{*/
 	: public QObject
 {
@@ -24,12 +31,16 @@ private slots:
 	void testpath();
 	void testpath_data();
 	void alldirstopdown();
+	void alldirstopdown_data();
 	///	トップダウンで、フォルダパス一覧を取得
 	void alldirstopdownwithcurrent();
-#ifdef QT_DEBUG
+
+#ifdef DUMP_DEBUG
+private:
 	/// [DEBUG]QStringListのダンプ
 	bool dumpQStringList( QStringList & list, QString & fileName );
-#endif
+#endif // DUMP_DEBUG
+
 };/*}}}*/
 //#include "../Plugin/Dialog/FileListDialog.h"
 //	QString parent_folder = QDir::currentPath();
@@ -54,29 +65,127 @@ void TestQMessageBox::initTestCase()/*{{{*/
 
 void TestQDir::alldirstopdown()/*{{{*/
 {
-	QString parent_folder;
-	//parent_folder = "C:/Pictures";
-	parent_folder = QDir::currentPath();
-	QDir dir = QDir(parent_folder);
-	dir.cdUp();
-	parent_folder = dir.path();
+	QFETCH( QString, case_name );
+	QFETCH( QString, root_path );
+	QFETCH( bool, bHasSubDir );
+	QFETCH( bool, bIgnoreRoot );
+	QFETCH( bool, bOnlyButtom );
 	QStringList all_dirs;
-	//all_dirs << parent_folder;
-    QDirIterator directories(parent_folder, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+	if ( bOnlyButtom )
+	{
+		QDirIterator directories( root_path, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
  
-    while(directories.hasNext()){
-        directories.next();
-        all_dirs << directories.filePath();
-    }
-	QVERIFY( !all_dirs.contains( parent_folder ) );
+		QMap< int, QStringList > map_depth;
+		while ( directories.hasNext() )
+		{
+			directories.next();
+			QString dir_path = directories.filePath();
+			// 深さを測る
+			QString sub_path = dir_path.mid( root_path.size() );
+			int depth = sub_path.count( "/" );
+			// 該当する深さのフォルダリストに追加
+			QStringList list_depth = map_depth[ depth ];
+			list_depth << dir_path;
+			map_depth[ depth ] = list_depth;
+		}
+		//qDebug() << qPrintable( QString("map_depth = ") ) << map_depth;
+		if ( map_depth.values().isEmpty() )
+		{
+			//Q_ASSERT( false );
+			int depth = 0;
+			QStringList list_depth = map_depth[ depth ];
+			list_depth << root_path;
+			map_depth[ depth ] = list_depth;
+		}
+		int max_depth = -1;
+		foreach ( int depth, map_depth.keys() )
+		{
+			max_depth = qMax( max_depth, depth );
+		}
+		Q_ASSERT( max_depth > 0 );
+		qDebug() << qPrintable( QString("max_depth = [%3]").arg( max_depth ) );
+		all_dirs = map_depth[ max_depth ];
+	}
+	else if ( bIgnoreRoot )
+	{
+		QDirIterator directories( root_path, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
+ 
+		while ( directories.hasNext() )
+		{
+			directories.next();
+			all_dirs << directories.filePath();
+		}
+		QVERIFY( !all_dirs.contains( root_path ) );
+	}
+	else if ( bHasSubDir )
+	{
+		all_dirs << root_path;
+		QDirIterator directories( root_path, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories );
+ 
+		while ( directories.hasNext() )
+		{
+			directories.next();
+			all_dirs << directories.filePath();
+		}
+	}
+	else
+	{
+		all_dirs << root_path;
+	}
+	// 重複して取得してないことの確認
 	int nResultCount = all_dirs.count();
 	all_dirs.removeDuplicates();
 	QCOMPARE( nResultCount, all_dirs.count() );
-#ifdef QT_DEBUG
-	QString strFileName;
-	strFileName = QString("%1/%2").arg(parent_folder).arg("alldirstopdown.txt");
+#ifdef DUMP_DEBUG
+	// Dumping
+	QString DIRPATH_RESULT( QDir::currentPath() );
+	//QString func_name( Q_FUNC_INFO );
+	QString func_name( "alldirstopdown" );
+	QString strFileName = QString( "%1/%2_%3.%4" ).arg( DIRPATH_RESULT ).arg( func_name ).arg( case_name ).arg( "txt" );;
+	qDebug() << qPrintable( QString("dump_file = [%3]").arg( strFileName ) );
 	dumpQStringList( all_dirs, strFileName );
-#endif
+#endif // DUMP_DEBUG
+}/*}}}*/
+// データセット部
+void TestQDir::alldirstopdown_data()/*{{{*/
+{
+	// テストデータのタイトル設定
+	QTest::addColumn< QString >( "case_name" );
+	QTest::addColumn< QString >( "root_path" );
+	QTest::addColumn< bool >( "bHasSubDir" );
+	QTest::addColumn< bool >( "bIgnoreRoot" );
+	QTest::addColumn< bool >( "bOnlyButtom" );
+	
+	// テストセット登録
+	QString case_name;
+	QString root_path;
+	bool bHasSubDir;
+	bool bIgnoreRoot;
+	bool bOnlyButtom;
+
+	case_name = QString( "case current path" );
+	root_path = QDir::currentPath();
+	bHasSubDir = true;
+	bIgnoreRoot = false;
+	bOnlyButtom = false;
+	QTest::newRow( case_name.toAscii().data() ) << case_name << root_path << bHasSubDir << bIgnoreRoot << bOnlyButtom;
+
+	case_name = QString( "case parent path" );
+	QDir dir( QDir::currentPath() );
+	dir.cdUp();
+	root_path = dir.path();
+//	bHasSubDir = true;
+//	bIgnoreRoot = true;
+//	bOnlyButtom = true;
+	QTest::newRow( case_name.toAscii().data() ) << case_name << root_path << bHasSubDir << bIgnoreRoot << bOnlyButtom;
+
+	case_name = QString( "case pictures dir" );
+	root_path = QString( "C:/Pictures" );
+//	bHasSubDir = true;
+//	bIgnoreRoot = true;
+//	bOnlyButtom = true;
+	QTest::newRow( case_name.toAscii().data() ) << case_name << root_path << bHasSubDir << bIgnoreRoot << bOnlyButtom;
+
 }/*}}}*/
 
 void TestQDir::alldirstopdownwithcurrent()/*{{{*/
@@ -89,21 +198,21 @@ void TestQDir::alldirstopdownwithcurrent()/*{{{*/
 	parent_folder = dir.path();
 	QStringList all_dirs;
 	all_dirs << parent_folder;
-    QDirIterator directories(parent_folder, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
+	QDirIterator directories(parent_folder, QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot, QDirIterator::Subdirectories);
  
-    while(directories.hasNext()){
-        directories.next();
-        all_dirs << directories.filePath();
-    }
+	while(directories.hasNext()){
+		directories.next();
+		all_dirs << directories.filePath();
+	}
 	QVERIFY( all_dirs.contains( parent_folder ) );
 	int nResultCount = all_dirs.count();
 	all_dirs.removeDuplicates();
 	QCOMPARE( nResultCount, all_dirs.count() );
-#ifdef QT_DEBUG
+#ifdef DUMP_DEBUG
 	QString strFileName;
 	strFileName = QString("%1/%2").arg(parent_folder).arg("alldirstopdownwithcurrent.txt");
 	dumpQStringList( all_dirs, strFileName );
-#endif
+#endif // DUMP_DEBUG
 }/*}}}*/
 /// QDir::mkpath() のテスト
 void TestQDir::testmkpath()/*{{{*/
@@ -197,7 +306,7 @@ void TestQDir::testpath_data()/*{{{*/
 	//QTest::newRow("case file path") << "C:/Data/ie6.png" << "C:/Data"; //FAIL!
 }/*}}}*/
 
-#ifdef QT_DEBUG
+#ifdef DUMP_DEBUG
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 
@@ -220,7 +329,7 @@ bool TestQDir::dumpQStringList( QStringList & list, QString & fileName )/*{{{*/
 	return true;
 }/*}}}*/
 
-#endif
+#endif // DUMP_DEBUG
 
 QTEST_MAIN(TestQDir)
 #include "testqdir.moc"
