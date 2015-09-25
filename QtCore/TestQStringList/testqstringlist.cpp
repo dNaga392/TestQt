@@ -7,12 +7,15 @@ class TestQStringList: public QObject
 {
 	Q_OBJECT
 private slots:
-// 順序確認
+	// 順序確認
 	void checkOrder();
-// int QStringList::indexOf(const QString & value, int from = 0) const
+	// int QStringList::indexOf(const QString & value, int from = 0) const
 	void indexOfQString();
 	void indexOfQString_data();
-// void QStringList::sort()
+	// QString QStringList::join ( const QString & separator ) const
+	void join();
+	void join_data();
+	// void QStringList::sort()
 	void sort();
 	void sort_data();
 };
@@ -42,6 +45,51 @@ void TestQStringList::checkOrder()/*{{{*/
 		}
 		++i;
 	}
+}/*}}}*/
+
+// int QStringList::indexOf(const QString & value, int from = 0) const
+// テスト部
+void TestQStringList::join()/*{{{*/
+{
+	// タイトルからテストデータの取得
+	QFETCH( QStringList, data );
+	QFETCH( QString, separator );
+	QFETCH( QString, result );
+	// 式を評価
+	QCOMPARE( data.join( separator ), result );
+}/*}}}*/
+// データセット部
+void TestQStringList::join_data()/*{{{*/
+{
+	// テストデータのタイトル設定
+	QTest::addColumn< QStringList >( "data" );
+	QTest::addColumn< QString >( "separator" );
+	QTest::addColumn< QString >( "result" );
+
+	// テストセット登録
+	QStringList listData;
+	QString strSeparator;
+	QString strResult;
+
+	listData << "Kaga";
+	strSeparator = ";";
+	strResult = "Kaga";
+	QTest::newRow("IJN CV Kaga") << listData << strSeparator << strResult;
+
+	listData.clear();
+	strSeparator.clear();
+
+	listData << "Kaga" << "Akagi" << "Hiryu" << "Soryu";
+	strSeparator = ";";
+	strResult = "Kaga;Akagi;Hiryu;Soryu";
+	QTest::newRow("IJN Nagumo fleet") << listData << strSeparator << strResult;
+
+	listData.clear();
+	strSeparator.clear();
+
+	listData << "Kaga" << "Akagi" << "Hiryu" << "Soryu";
+	strResult = "KagaAkagiHiryuSoryu";
+	QTest::newRow("IJN Nagumo fleet (nospace)") << listData << strSeparator << strResult;
 }/*}}}*/
 
 // int QStringList::indexOf(const QString & value, int from = 0) const

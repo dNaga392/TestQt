@@ -57,7 +57,7 @@ private:
 //	dlg.exec();
 
 ///	@brief	テストケースの初期設定をします。
-void TestQMessageBox::initTestCase()/*{{{*/
+void TestQDir::initTestCase()/*{{{*/
 {
 	// 日本語対応
 	QTextCodec::setCodecForCStrings( QTextCodec::codecForLocale() );
