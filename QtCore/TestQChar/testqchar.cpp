@@ -24,6 +24,8 @@ private Q_SLOTS:
 	void isLetter_data();
 	void isLetterOrNumber();
 	void isLetterOrNumber_data();
+	void isNumber();
+	void isNumber_data();
 
 };
 
@@ -71,6 +73,30 @@ void TestQChar::isLetterOrNumber_data()
 	bool result;
 	ch = 'e';
 	result = true;
+	QTest::newRow("e") << ch << result;
+	ch = '0';
+	result = true;
+	QTest::newRow("0") << ch << result;
+	ch = '-';
+	result = false;
+	QTest::newRow("-") << ch << result;
+}
+
+void TestQChar::isNumber()
+{
+	QFETCH( QChar, ch );
+	QFETCH( bool, result );
+	QCOMPARE( ch.isNumber(), result );
+}
+
+void TestQChar::isNumber_data()
+{
+	QTest::addColumn< QChar >( "ch" );
+	QTest::addColumn< bool >( "result" );
+	QChar ch;
+	bool result;
+	ch = 'e';
+	result = false;
 	QTest::newRow("e") << ch << result;
 	ch = '0';
 	result = true;
