@@ -6,7 +6,7 @@
 #include <QtTest/QtTest>
 #include <QtCore/QList>
 
-typedef QList<qint32> QInt32List;
+typedef QList< qint32 > QInt32List;
 
 ///	QListのテストクラス
 class TestQList/*{{{*/
