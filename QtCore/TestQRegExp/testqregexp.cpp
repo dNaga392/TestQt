@@ -4,7 +4,8 @@
 #include <QtTest/QtTest>
 //#include <QRegExp>
 
-class TestQRegExp: public QObject
+class TestQRegExp
+	: public QObject
 {
 	Q_OBJECT
 private slots:
@@ -16,21 +17,48 @@ private slots:
 // bool QRegExp::isValid () const
 	void isValid();
 	void isValid_data();
-	void testexactmatch();
+	void exactMatch();
+	void exactMatch_data();
 };
 
-void TestQRegExp::testexactmatch()
+void TestQRegExp::exactMatch()
 {
-	QString str;
-	QString pat;
+	QFETCH( QString, pattern );
+	QFETCH( QString, str );
+	QFETCH( bool, result );
 
-	str = "201502E4-001.jpg";
-	pat = "201502E4(.+)";
-
-	QRegExp rx(pat);
-
-	QVERIFY( rx.exactMatch( str ) );
+	QRegExp rx( pattern );
+	QCOMPARE( rx.exactMatch( str ), result );
 }
+void TestQRegExp::exactMatch_data()/*{{{*/
+{
+	// テストデータのタイトル設定
+	QTest::addColumn< QString >("pattern");
+	QTest::addColumn< QString >("str");
+	QTest::addColumn< bool >("result");
+
+	QString pattern;
+	QString str;
+	bool result;
+
+	// テストセット登録
+	pattern = "201502E4(.+)";
+	str = "201502E4-001.jpg";
+	result = true;
+	QTest::newRow("filename") << pattern << str << result;
+	pattern = "[0123456789]*";
+	str = "456168416631";
+	result = true;
+	QTest::newRow("numeric") << pattern << str << result;
+	pattern = "[0123456789]*";
+	str = "";
+	result = true;
+	QTest::newRow("numeric empty") << pattern << str << result;
+	pattern = "[0123456789]*";
+	str = "2.34E+010";
+	result = false;
+	QTest::newRow("numeric error") << pattern << str << result;
+}/*}}}*/
 
 // int QRegExp::indexIn ( const QString & str, int offset = 0, CaretMode caretMode = CaretAtZero ) const
 // テスト部
@@ -40,7 +68,7 @@ void TestQRegExp::indexIn()/*{{{*/
 	QFETCH(QRegExp, rx);
 	QFETCH(QString, str);
 	QFETCH(int, pos);
-	qDebug() << str;
+	//qDebug() << str;
 	// 式を評価
 	//QVERIFY(testList.isValid() == resultList);
 	QCOMPARE(rx.indexIn(str), pos);
@@ -66,7 +94,7 @@ void TestQRegExp::isValid()/*{{{*/
 	// タイトルからテストデータの取得
 	QFETCH(QString, isValidPattern);
 	QFETCH(bool, isValidResult);
-	qDebug() << isValidPattern;
+	//qDebug() << isValidPattern;
 	// テスト
 	QRegExp rx(isValidPattern);
 	// 式を評価
