@@ -1,16 +1,26 @@
-// QString‚ÌƒeƒXƒg
-// testqstring.cpp
-
+/*! ******************************************************************
+	@file	testqstring.cpp
+	@brief	Test of QString
+******************************************************************* */
 #include <string>
 
 #include <QtTest/QtTest>
 
-class TestQString: public QObject
+/*! ******************************************************************
+	@brief	Test class of QString
+******************************************************************* */
+class TestQString/*{{{*/
+	: public QObject
 {
 	Q_OBJECT
 
-private slots:
-	void initTestCase();
+private Q_SLOTS:
+	//void initTestCase();
+	//void cleanupTestCase();
+	//void init();
+	//void cleanUp();
+
+private Q_SLOTS:
 // bool QString::contains ( const QString & str, Qt::CaseSensitivity cs = Qt::CaseSensitive ) const
 	void containsQString();
 	void containsQString_data();
@@ -22,14 +32,14 @@ private slots:
 	void containsQRegExp_data();
 
 	// QString QString::toUpper() const
-	///	QString::toUpper() ‚ÌƒeƒXƒg
+	///	QString::toUpper() ã®ãƒ†ã‚¹ãƒˆ
 	void toUpper();
-	///	QString::toUpper() ‚ÌƒeƒXƒgƒf[ƒ^ƒZƒbƒg
+	///	QString::toUpper() ã®ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆ
 	void toUpper_data();
 	
-	///	std::string ‚©‚ç QString ‚Ö‚Ì•ÏŠ·ƒeƒXƒg
+	///	std::string ã‹ã‚‰ QString ã¸ã®å¤‰æ›ãƒ†ã‚¹ãƒˆ
 	void fromStdString();
-	///	QString ‚©‚ç std::string ‚Ö‚Ì•ÏŠ·ƒeƒXƒg
+	///	QString ã‹ã‚‰ std::string ã¸ã®å¤‰æ›ãƒ†ã‚¹ãƒˆ
 	void toStdString();
 	void numberDouble();
 	void numberDouble_data();
@@ -39,30 +49,67 @@ private slots:
 	void testsetnumdouble();
 	void testsetnumdouble_data();
 	void length();
-};
+	void sprintf();
+	void sprintf_data();
+};/*}}}*/
 
-void TestQString::initTestCase()/*{{{*/
+void TestQString::sprintf()
 {
-	QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
-}/*}}}*/
+//	QFETCH( QString, format );
+//	QFETCH( double, d );
+//	QFETCH( QString, result );
+//
+//	const char * cformat = format.toAscii().constData();
+//
+//	QString str;
+//	str.sprintf( cformat, d );
+//
+//	QCOMPARE( str, result );
+
+	// ç¾çŠ¶ã®ãƒ†ã‚¹ãƒˆã‚±ãƒ¼ã‚¹ã ã¨å¤±æ•—ã™ã‚‹ãŒã€
+	// ä»¥ä¸‹ã¯æ­£å¸¸ã«ãƒ†ã‚¹ãƒˆãŒé€šã‚‹
+	const char * cformat = "%.0f";
+	double d = 3.14;
+	QString result("3");
+
+	QString format( cformat );
+	QCOMPARE( cformat, format.toAscii().constData() );
+
+	QString str;
+	str.sprintf( cformat, d );
+
+	QCOMPARE( str, result );
+}
+
+void TestQString::sprintf_data()
+{
+//	QTest::addColumn< QString >( "format" );
+//	QTest::addColumn< double >( "d" );
+//	QTest::addColumn< QString >( "result" );
+//	
+//	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
+//	QTest::newRow("example") << QString("%.0f") << 3.14 << QString("3");
+//	QTest::newRow("example") << QString("%f")   << 3.14 << QString("3.140000");
+}
 
 void TestQString::length()/*{{{*/
 {
-	QString str = "‡W";
+	QString str = QString::fromUtf8("â…£");
 
 	int nLen = str.length();
-	// ®‚ğ•]‰¿
+	// å¼ã‚’è©•ä¾¡
 	QCOMPARE( nLen, 1 );
 
-	QByteArray ba = str.toLocal8Bit().constData();
-	nLen = ba.length();
-	QCOMPARE( nLen, 2 );
+	// sjis test case
+	//QByteArray ba = str.toLocal8Bit().constData();
+	//nLen = ba.length();
+	//QCOMPARE( nLen, 2 );
 }/*}}}*/
 
-/// ‹¤’Ê‚ÌƒtƒHƒ‹ƒ_ƒpƒX‚ğæ“¾‚·‚é
+/// å…±é€šã®ãƒ•ã‚©ãƒ«ãƒ€ãƒ‘ã‚¹ã‚’å–å¾—ã™ã‚‹
 void TestQString::testcommondirectorypath()/*{{{*/
 {
-	// ƒ^ƒCƒgƒ‹‚©‚çƒeƒXƒgƒf[ƒ^‚Ìæ“¾
+	// ã‚¿ã‚¤ãƒˆãƒ«ã‹ã‚‰ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 	QFETCH(QString, path1);
 	QFETCH(QString, path2);
 	QFETCH(QString, common);
@@ -81,7 +128,7 @@ void TestQString::testcommondirectorypath()/*{{{*/
 
 	result = ret;
 
-	// ®‚ğ•]‰¿
+	// å¼ã‚’è©•ä¾¡
 	QCOMPARE( result, common );
 }/*}}}*/
 void TestQString::testcommondirectorypath_data()/*{{{*/
@@ -90,7 +137,7 @@ void TestQString::testcommondirectorypath_data()/*{{{*/
 	QTest::addColumn<QString>("path2");
 	QTest::addColumn<QString>("common");
 	
-	// ƒeƒXƒgƒZƒbƒg“o˜^
+	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
 	QTest::newRow("example") << "C:/Documents" << "C:/Pictures" << "C:";
 	QTest::newRow("example") << "C:/Documents/Excel" << "C:/Pictures/201502" << "C:";
 	QTest::newRow("example") << "C:/Pictures/iPhone" << "C:/Pictures/201502" << "C:/Pictures";
@@ -107,7 +154,7 @@ void TestQString::fromStdString()/*{{{*/
 	
 	QString expected("hoge");
 
-	// ®‚ğ•]‰¿
+	// å¼ã‚’è©•ä¾¡
 	QCOMPARE( qstr, expected );
 	QCOMPARE( qstr, expected );
 }/*}}}*/
@@ -130,62 +177,62 @@ void TestQString::toStdString()/*{{{*/
 }/*}}}*/
 
 // bool QString::contains ( const QString & str, Qt::CaseSensitivity cs = Qt::CaseSensitive ) const
-// ƒeƒXƒg•”
+// ãƒ†ã‚¹ãƒˆéƒ¨
 void TestQString::containsQString()/*{{{*/
 {
-	// ƒ^ƒCƒgƒ‹‚©‚çƒeƒXƒgƒf[ƒ^‚Ìæ“¾
+	// ã‚¿ã‚¤ãƒˆãƒ«ã‹ã‚‰ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 	QFETCH(QString, string);
 	QFETCH(QString, str);
 	QFETCH(int, cs);
 	QFETCH(bool, result);
-	// ®‚ğ•]‰¿
+	// å¼ã‚’è©•ä¾¡
 	QCOMPARE((bool)string.contains(str, static_cast<Qt::CaseSensitivity>(cs)), result);
 }/*}}}*/
-// ƒf[ƒ^ƒZƒbƒg•”
+// ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆéƒ¨
 void TestQString::containsQString_data()/*{{{*/
 {
-	// ƒeƒXƒgƒf[ƒ^‚Ìƒ^ƒCƒgƒ‹İ’è
+	// ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒˆãƒ«è¨­å®š
 	QTest::addColumn<QString>("string");
 	QTest::addColumn<QString>("str");
 	//QTest::addColumn<Qt::CaseSensitivity>("cs");
 	QTest::addColumn<int>("cs");
 	QTest::addColumn<bool>("result");
 	
-	// ƒeƒXƒgƒZƒbƒg“o˜^
+	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
 	//QTest::newRow("example") << "Peter Pan" << "peter" << Qt::CaseInsensitive << true;
 	QTest::newRow("example") << "Peter Pan" << "peter" << (int)Qt::CaseInsensitive << true;
 }/*}}}*/
 
 //// bool QString::contains ( const QRegExp & rx ) const
-//// ƒeƒXƒg•”
+//// ãƒ†ã‚¹ãƒˆéƒ¨
 //void TestQString::containsConstQRegExp()/*{{{*/
 //{
 //}/*}}}*/
-//// ƒf[ƒ^ƒZƒbƒg•”
+//// ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆéƒ¨
 //void TestQString::containsConstQRegExp_data()/*{{{*/
 //{
 //}/*}}}*/
 
 // bool QString::contains ( QRegExp & rx ) const
-// ƒeƒXƒg•”
+// ãƒ†ã‚¹ãƒˆéƒ¨
 void TestQString::containsQRegExp()/*{{{*/
 {
-	// ƒ^ƒCƒgƒ‹‚©‚çƒeƒXƒgƒf[ƒ^‚Ìæ“¾
+	// ã‚¿ã‚¤ãƒˆãƒ«ã‹ã‚‰ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 	QFETCH(QString, string);
 	QFETCH(QRegExp, rx);
 	QFETCH(bool, result);
-	// ®‚ğ•]‰¿
+	// å¼ã‚’è©•ä¾¡
 	QCOMPARE((bool)string.contains(rx), result);
 }/*}}}*/
-// ƒf[ƒ^ƒZƒbƒg•”
+// ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆéƒ¨
 void TestQString::containsQRegExp_data()/*{{{*/
 {
-	// ƒeƒXƒgƒf[ƒ^‚Ìƒ^ƒCƒgƒ‹İ’è
+	// ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒˆãƒ«è¨­å®š
 	QTest::addColumn<QString>("string");
 	QTest::addColumn<QRegExp>("rx");
 	QTest::addColumn<bool>("result");
 	
-	// ƒeƒXƒgƒZƒbƒg“o˜^
+	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
 	QTest::newRow("example") << "Peter Pan" << QRegExp(".+") << true;
 	QTest::newRow("example1") << "2012/06/30 13:45:30" << QRegExp("..../../.. ..:..:..") << true;
 	QTest::newRow("example2") << "2012/06/30 13:45:30" << QRegExp("..:..:..") << true;
@@ -194,16 +241,16 @@ void TestQString::containsQRegExp_data()/*{{{*/
 }/*}}}*/
 
 // void QString::toUpper()
-// ƒeƒXƒg•”
+// ãƒ†ã‚¹ãƒˆéƒ¨
 void TestQString::toUpper()/*{{{*/
 {
-	// ƒ^ƒCƒgƒ‹‚©‚çƒeƒXƒgƒf[ƒ^‚Ìæ“¾
+	// ã‚¿ã‚¤ãƒˆãƒ«ã‹ã‚‰ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 	QFETCH(QString, string);
 	QFETCH(QString, result);
-	// ®‚ğ•]‰¿
+	// å¼ã‚’è©•ä¾¡
 	if(string!=result)
 	{
-		// toUpper()‚ÅŒ³‚Ì•¶š—ñ‚Í•Ï‰»‚µ‚È‚¢
+		// toUpper()ã§å…ƒã®æ–‡å­—åˆ—ã¯å¤‰åŒ–ã—ãªã„
 		QVERIFY(string != string.toUpper());
 		QVERIFY(string.toUpper() != string);
 		//string.toUpper();
@@ -212,23 +259,23 @@ void TestQString::toUpper()/*{{{*/
 	}
 	QCOMPARE(string.toUpper(), result);
 }/*}}}*/
-// ƒf[ƒ^ƒZƒbƒg•”
+// ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆéƒ¨
 void TestQString::toUpper_data()/*{{{*/
 {
-	// ƒeƒXƒgƒf[ƒ^‚Ìƒ^ƒCƒgƒ‹İ’è
+	// ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒˆãƒ«è¨­å®š
 	QTest::addColumn<QString>("string");
 	QTest::addColumn<QString>("result");
 	
-	// ƒeƒXƒgƒZƒbƒg“o˜^
+	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
 	QTest::newRow("all lower") << "hello" << "HELLO";
 	QTest::newRow("mixed")     << "Hello" << "HELLO";
 	QTest::newRow("all upper") << "HELLO" << "HELLO";
 }/*}}}*/
 
-// ƒeƒXƒg•”
+// ãƒ†ã‚¹ãƒˆéƒ¨
 void TestQString::numberDouble()/*{{{*/
 {
-	// ƒ^ƒCƒgƒ‹‚©‚çƒeƒXƒgƒf[ƒ^‚Ìæ“¾
+	// ã‚¿ã‚¤ãƒˆãƒ«ã‹ã‚‰ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 	QFETCH(double, n);
 	QFETCH(char, format);
 	QFETCH(int, precision);
@@ -237,31 +284,31 @@ void TestQString::numberDouble()/*{{{*/
 	QString actual = QString::number( n, format, precision );
 	QCOMPARE( actual, num );
 }/*}}}*/
-// ƒf[ƒ^ƒZƒbƒg•”
+// ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆéƒ¨
 void TestQString::numberDouble_data()/*{{{*/
 {
-	// ƒeƒXƒgƒf[ƒ^‚Ìƒ^ƒCƒgƒ‹İ’è
+	// ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒˆãƒ«è¨­å®š
 	QTest::addColumn<double>("n");
 	QTest::addColumn<char>("format");
 	QTest::addColumn<int>("precision");
 	QTest::addColumn<QString>("num");
 	
-	// ƒeƒXƒgƒZƒbƒg“o˜^
-	QTest::newRow("case 3") << 3.14159265 << 'f' << 3 << "3.142"; // lÌŒÜ“ü‚³‚ê‚é
+	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
+	QTest::newRow("case 3") << 3.14159265 << 'f' << 3 << "3.142"; // å››æ¨äº”å…¥ã•ã‚Œã‚‹
 	QTest::newRow("case 4") << 3.14159265 << 'f' << 4 << "3.1416";
 	QTest::newRow("case 5") << 3.14159265 << 'f' << 5 << "3.14159";
 	QTest::newRow("case 6") << 3.14159265 << 'f' << 6 << "3.141593";
 	QTest::newRow("case 14") << 1.0/3.0 << 'g' << 14 << "0.33333333333333";
-	QTest::newRow("case z3") << 3.00000000 << 'f' << 3 << "3.000"; // 0‚Íc‚é
+	QTest::newRow("case z3") << 3.00000000 << 'f' << 3 << "3.000"; // 0ã¯æ®‹ã‚‹
 	QTest::newRow("case z4") << 3.00000000 << 'f' << 4 << "3.0000";
 	QTest::newRow("case z5") << 3.00000000 << 'f' << 5 << "3.00000";
 	QTest::newRow("case z6") << 3.00000000 << 'f' << 6 << "3.000000";
 }/*}}}*/
 
-// ƒeƒXƒg•”
+// ãƒ†ã‚¹ãƒˆéƒ¨
 void TestQString::testsetnumdouble()/*{{{*/
 {
-	// ƒ^ƒCƒgƒ‹‚©‚çƒeƒXƒgƒf[ƒ^‚Ìæ“¾
+	// ã‚¿ã‚¤ãƒˆãƒ«ã‹ã‚‰ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 	QFETCH(double, n);
 	QFETCH(char, format);
 	QFETCH(int, precision);
@@ -271,22 +318,22 @@ void TestQString::testsetnumdouble()/*{{{*/
 	actual.setNum( n, format, precision );
 	QCOMPARE( actual, num );
 }/*}}}*/
-// ƒf[ƒ^ƒZƒbƒg•”
+// ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆéƒ¨
 void TestQString::testsetnumdouble_data()/*{{{*/
 {
-	// ƒeƒXƒgƒf[ƒ^‚Ìƒ^ƒCƒgƒ‹İ’è
+	// ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒˆãƒ«è¨­å®š
 	QTest::addColumn<double>("n");
 	QTest::addColumn<char>("format");
 	QTest::addColumn<int>("precision");
 	QTest::addColumn<QString>("num");
 	
-	// ƒeƒXƒgƒZƒbƒg“o˜^
-	QTest::newRow("case 3") << 3.14159265 << 'f' << 3 << "3.142"; // lÌŒÜ“ü‚³‚ê‚é
+	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
+	QTest::newRow("case 3") << 3.14159265 << 'f' << 3 << "3.142"; // å››æ¨äº”å…¥ã•ã‚Œã‚‹
 	QTest::newRow("case 4") << 3.14159265 << 'f' << 4 << "3.1416";
 	QTest::newRow("case 5") << 3.14159265 << 'f' << 5 << "3.14159";
 	QTest::newRow("case 6") << 3.14159265 << 'f' << 6 << "3.141593";
 	QTest::newRow("case 14") << 1.0/3.0 << 'g' << 14 << "0.33333333333333";
-	QTest::newRow("case z3") << 3.00000000 << 'f' << 3 << "3.000"; // 0‚Íc‚é
+	QTest::newRow("case z3") << 3.00000000 << 'f' << 3 << "3.000"; // 0ã¯æ®‹ã‚‹
 	QTest::newRow("case z4") << 3.00000000 << 'f' << 4 << "3.0000";
 	QTest::newRow("case z5") << 3.00000000 << 'f' << 5 << "3.00000";
 	QTest::newRow("case z6") << 3.00000000 << 'f' << 6 << "3.000000";
