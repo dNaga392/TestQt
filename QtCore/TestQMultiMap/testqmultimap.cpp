@@ -1,18 +1,22 @@
-// QMultiMapのテスト
-// testqmultimap.cpp
+///	@file	testqmultimap.cpp
+///	@brief	QMultiMapのテスト
 
+#include <QtCore/QMultiMap>
 #include <QtTest/QtTest>
-#include <QMultiMap>
 
 
-class TestQMultiMap: public QObject
+class TestQMultiMap/*{{{*/
+	: public QObject
 {
 	Q_OBJECT
-private slots:
+
+private Q_SLOTS:
 	void count();
 	void countKey();
 	void countKeyValue();
-};
+	void insert();
+};/*}}}*/
+
 
 void TestQMultiMap::count()/*{{{*/
 {
@@ -54,5 +58,21 @@ void TestQMultiMap::countKeyValue()/*{{{*/
 	QCOMPARE(map.count(2, 2), 2);
 }/*}}}*/
 
-QTEST_MAIN(TestQMultiMap)
+void TestQMultiMap::insert()/*{{{*/
+{
+	QMultiMap< int, QString > map;
+	QList< QString > list;
+	int key = 1;
+	QString value;
+	value = ("One!");
+	map.insert( key, value );
+	list.prepend( value );
+	value = ("Two!");
+	map.insert( key, value );
+	list.prepend( value );
+	// 式を評価
+	QCOMPARE( map.values( key ), list );
+}/*}}}*/
+
+QTEST_MAIN( TestQMultiMap )
 #include "testqmultimap.moc"
