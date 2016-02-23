@@ -51,8 +51,37 @@ private Q_SLOTS:
 	void length();
 	void sprintf();
 	void sprintf_data();
+	void setNum_double();
+	void arg_double();
 };/*}}}*/
 
+void TestQString::arg_double()
+{
+	double n = 0.001592;
+	int fieldWidth = 0;
+	char format = 'f';
+	int precision = 3;
+	QChar fillChar = QLatin1Char( ' ' );
+	QString result( "0.002" );
+
+	QString str;
+	str = QString("%1").arg( n, fieldWidth, format, precision, fillChar );
+
+	QCOMPARE( str, result );
+}
+
+void TestQString::setNum_double()
+{
+	double n = 0.001592;
+	char format = 'f';
+	int precision = 3;
+	QString result("0.002");
+
+	QString str;
+	str.setNum( n, format, precision );
+
+	QCOMPARE( str, result );
+}
 void TestQString::sprintf()
 {
 //	QFETCH( QString, format );
