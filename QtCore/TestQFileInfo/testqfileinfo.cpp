@@ -1,36 +1,52 @@
-// QFileInfo‚ÌƒeƒXƒg
-// testqfileinfo.cpp
-
+/*! ******************************************************************
+	@file	testqfileinfo.cpp
+	@brief	QFileInfoã®ãƒ†ã‚¹ãƒˆ
+******************************************************************* */
 #include <QtTest/QtTest>
 #include <QFileInfo>
 
 class TestQFileInfo: public QObject
 {
 	Q_OBJECT
-private slots:
+
+private Q_SLOTS:
+	void path();
 	void test();
 	void test_data();
 	void dirtest();
 	void dirtest_data();
 };
 
-// ƒeƒXƒg•”
+void TestQFileInfo::path()
+{
+	QString file;
+	QString path;
+
+	file = "C:/Data/ie6.png";
+	path = "C:/Data";
+
+	QFileInfo fi( file );
+
+	QCOMPARE( fi.path(), path ); // TRUE
+}
+
+// ãƒ†ã‚¹ãƒˆéƒ¨
 void TestQFileInfo::test()/*{{{*/
 {
-	// ƒ^ƒCƒgƒ‹‚©‚çƒeƒXƒgƒf[ƒ^‚Ìæ“¾
+	// ã‚¿ã‚¤ãƒˆãƒ«ã‹ã‚‰ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 	QFETCH(QString, directory);
 	QFETCH(QString, relative);
 	QFETCH(QString, absolute);
-	// ®‚ğ•]‰¿
+	// å¼ã‚’è©•ä¾¡
 	QDir dir(directory);
 	QFileInfo info(dir, relative);
 	//QCOMPARE(info.absoluteFilePath(), absolute); // FALSE
 	QFileInfo infoAbs(absolute);
 	//QCOMPARE(info.dir(), infoAbs.dir());//TRUE
 	//QCOMPARE(info.dir().path(), infoAbs.dir().path()); // FALSE
-	// ‘Š‘ÎƒpƒXî•ñ‚ğæ‚èœ‚¢‚Ä‚İ‚é
+	// ç›¸å¯¾ãƒ‘ã‚¹æƒ…å ±ã‚’å–ã‚Šé™¤ã„ã¦ã¿ã‚‹
 	QString path = info.absoluteFilePath();
-	// ãˆÊƒfƒBƒŒƒNƒgƒŠw’è‚Ì’uŠ·
+	// ä¸Šä½ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæŒ‡å®šã®ç½®æ›
 	QRegExp parSys("\\w+/\\.\\./");
 	while(path.contains(parSys))
 	{
@@ -39,7 +55,7 @@ void TestQFileInfo::test()/*{{{*/
 		path = path.replace(parSys, "");
 		qDebug() << path;
 	}
-	// ‹N“_ƒfƒBƒŒƒNƒgƒŠw’è‚Ì’uŠ·
+	// èµ·ç‚¹ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæŒ‡å®šã®ç½®æ›
 	QRegExp curSys("\\./");
 	while(path.contains(curSys))
 	{
@@ -51,15 +67,15 @@ void TestQFileInfo::test()/*{{{*/
 	QCOMPARE(path, absolute); // TRUE
 
 }/*}}}*/
-// ƒf[ƒ^ƒZƒbƒg•”
+// ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆéƒ¨
 void TestQFileInfo::test_data()/*{{{*/
 {
-	// ƒeƒXƒgƒf[ƒ^‚Ìƒ^ƒCƒgƒ‹İ’è
+	// ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒˆãƒ«è¨­å®š
 	QTest::addColumn<QString>("directory");
 	QTest::addColumn<QString>("relative");
 	QTest::addColumn<QString>("absolute");
 	
-	// ƒeƒXƒgƒZƒbƒg“o˜^
+	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
 	QTest::newRow("current Path") << "C:/Data" << "ie6.png" << "C:/Data/ie6.png";
 	QTest::newRow("current sysPath") << "C:/Data" << "./ie6.png" << "C:/Data/ie6.png";
 	QTest::newRow("twice current sysPath") << "C:/Data" << "././ie6.png" << "C:/Data/ie6.png";
@@ -68,25 +84,25 @@ void TestQFileInfo::test_data()/*{{{*/
 	QTest::newRow("twice parent sysPath") << "C:/Qt/bin4" << "../../Data/ie6.png" << "C:/Data/ie6.png";
 }/*}}}*/
 
-// ƒeƒXƒg•”
+// ãƒ†ã‚¹ãƒˆéƒ¨
 void TestQFileInfo::dirtest()/*{{{*/
 {
-	// ƒ^ƒCƒgƒ‹‚©‚çƒeƒXƒgƒf[ƒ^‚Ìæ“¾
+	// ã‚¿ã‚¤ãƒˆãƒ«ã‹ã‚‰ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®å–å¾—
 	QFETCH(QString, path);
 	QFETCH(QString, dirPath);
-	// ®‚ğ•]‰¿
+	// å¼ã‚’è©•ä¾¡
 	QDir dir(path);
 	QCOMPARE(dir.path(), dirPath);
 
 }/*}}}*/
-// ƒf[ƒ^ƒZƒbƒg•”
+// ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆéƒ¨
 void TestQFileInfo::dirtest_data()/*{{{*/
 {
-	// ƒeƒXƒgƒf[ƒ^‚Ìƒ^ƒCƒgƒ‹İ’è
+	// ãƒ†ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿ã®ã‚¿ã‚¤ãƒˆãƒ«è¨­å®š
 	QTest::addColumn<QString>("path");
 	QTest::addColumn<QString>("dirPath");
 	
-	// ƒeƒXƒgƒZƒbƒg“o˜^
+	// ãƒ†ã‚¹ãƒˆã‚»ãƒƒãƒˆç™»éŒ²
 	QTest::newRow("dir path") << "C:/Data" << "C:/Data";
 	QTest::newRow("dir path with sep") << "C:/Data/" << "C:/Data";
 	//QTest::newRow("file path") << "C:/Data/ie6.png" << "C:/Data"; //FAIL!
