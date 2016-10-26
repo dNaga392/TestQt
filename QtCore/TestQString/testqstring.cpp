@@ -53,7 +53,47 @@ private Q_SLOTS:
 	void sprintf_data();
 	void setNum_double();
 	void arg_double();
+	void split();
+	void toInt();
 };/*}}}*/
+
+//void TestQString::toInt_data()
+//{
+//	QTest::addColumn< QString >( "str" );
+//	QTest::addColumn< int >( "result" );
+//
+//	QString str;
+//	int result;
+//	// テストセット登録
+//	QTest::newRow("example") << str << result;
+//}
+
+void TestQString::toInt()
+{
+	int actual;
+	actual = QString("123").split( QRegExp("[\\D]") ).first().toInt();
+	QCOMPARE( actual, 123 );
+	actual = QString("abc").split( QRegExp("[\\D]") ).first().toInt();
+	QCOMPARE( actual, 0 );
+	actual = QString("1a2b3c").split( QRegExp("[\\D]") ).first().toInt();
+	QCOMPARE( actual, 1 );
+	actual = QString("a7b8c9").split( QRegExp("[\\D]") ).first().toInt();
+	QCOMPARE( actual, 0 );
+}
+
+void TestQString::split()
+{
+	QString str("The piece\tis\fthe\rwar.\n");
+	QString sepalate_str(" \t\n\r\f");
+	QString rx_str( QString("[%1]").arg( sepalate_str ) );
+	QRegExp rx( rx_str );
+	QStringList result = str.split( rx );
+	QStringList expected;
+	expected << "The"<<"piece"<<"is"<<"the"<<"war."<<"";
+
+	QCOMPARE( result, expected );
+	QCOMPARE( result.size(), 6 );
+}
 
 void TestQString::arg_double()
 {
