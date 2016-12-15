@@ -14,6 +14,8 @@ private Q_SLOTS:
 	void exists();
 	void isDir_data();
 	void isDir();
+	void isFile_data();
+	void isFile();
 	void path();
 	void test();
 	void test_data();
@@ -55,6 +57,24 @@ void TestQFileInfo::isDir()
 	QFETCH(bool, expected);
 
 	QCOMPARE(QFileInfo(path).isDir(), expected);
+}
+
+void TestQFileInfo::isFile_data()
+{
+	QTest::addColumn<QString>("path");
+	QTest::addColumn<bool>("expected");
+
+	QTest::newRow("Dir") << QCoreApplication::instance()->applicationDirPath() << false;
+	QTest::newRow("File") << QCoreApplication::instance()->applicationFilePath() << true;
+	QTest::newRow("NoExistsDir") << QCoreApplication::instance()->applicationDirPath().append("/NoExistsDir") << false;
+	QTest::newRow("NoExistsFile") << QCoreApplication::instance()->applicationDirPath().append("/NoExistsFile.dat") << false;
+}
+void TestQFileInfo::isFile()
+{
+	QFETCH(QString, path);
+	QFETCH(bool, expected);
+
+	QCOMPARE(QFileInfo(path).isFile(), expected);
 }
 
 void TestQFileInfo::path()
