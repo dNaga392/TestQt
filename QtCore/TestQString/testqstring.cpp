@@ -53,7 +53,11 @@ private Q_SLOTS:
 	void sprintf_data();
 	void setNum_double();
 	void arg_double();
-	void split();
+	void split_qchar_data();
+	void split_qchar();
+	void split_char_data();
+	void split_char();
+	void split_rx();
 	void toInt();
 };/*}}}*/
 
@@ -81,7 +85,51 @@ void TestQString::toInt()
 	QCOMPARE( actual, 0 );
 }
 
-void TestQString::split()
+void TestQString::split_qchar_data()
+{
+	QTest::addColumn<QString>("str");
+	QTest::addColumn<QChar>("sep");
+	QTest::addColumn<int>("size");
+
+	QTest::newRow("example") << ("hoge,huga,hage,hege") << QChar(',') << 4;
+}
+void TestQString::split_qchar()
+{
+	QFETCH(QString, str);
+	QFETCH(QChar, sep);
+	QFETCH(int, size);
+	QStringList strlist = str.split(sep);
+
+	QCOMPARE(strlist.size(), size);
+}
+
+void TestQString::split_char_data()
+{
+	QTest::addColumn<QString>("str");
+	QTest::addColumn<char>("sep");
+	QTest::addColumn<int>("size");
+
+	QTest::newRow("example") << ("hoge,huga,hage,hege") << (',') << 4;
+}
+void TestQString::split_char()
+{
+	QFETCH(QString, str);
+	QFETCH(char, sep);
+	QFETCH(int, size);
+	QStringList strlist = str.split(sep);
+
+	QCOMPARE(strlist.size(), size);
+
+	int count = 0;
+	for (count = 0; count < strlist.count(); )
+	{
+		strlist.at(count);
+		++count;
+	}
+	QCOMPARE(strlist.count(), count);
+}
+
+void TestQString::split_rx()
 {
 	QString str("The piece\tis\fthe\rwar.\n");
 	QString sepalate_str(" \t\n\r\f");
