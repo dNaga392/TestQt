@@ -12,6 +12,8 @@ class TestQFileInfo : public QObject
 private Q_SLOTS:
 	void exists_data();
 	void exists();
+	void filePath_data();
+	void filePath();
 	void isDir_data();
 	void isDir();
 	void isFile_data();
@@ -39,6 +41,23 @@ void TestQFileInfo::exists()
 	QFETCH(bool, expected);
 
 	QCOMPARE(QFileInfo(path).exists(), expected);
+}
+
+void TestQFileInfo::filePath_data()
+{
+	QTest::addColumn<QString>("path");
+	QTest::addColumn<QString>("expected");
+
+	QTest::newRow("Dir") << QCoreApplication::instance()->applicationDirPath() << QCoreApplication::instance()->applicationDirPath();
+	QTest::newRow("File") << QCoreApplication::instance()->applicationFilePath() << QCoreApplication::instance()->applicationFilePath();
+	QTest::newRow("Native") << "C:\\Pictures\\test.png" << "C:/Pictures/test.png";
+}
+void TestQFileInfo::filePath()
+{
+	QFETCH(QString, path);
+	QFETCH(QString, expected);
+
+	QCOMPARE(QFileInfo(path).filePath(), expected);
 }
 
 void TestQFileInfo::isDir_data()
