@@ -51,7 +51,7 @@ void TestQFile::readLine()
 		QString str(file.readLine());
 		if (!file.atEnd())
 		{
-			// a string read by qtextstream contains newline charactor(s).
+			// The newline character(s) is included in the buffer.
 			bool actual = str.contains(QRegExp("\r$|\n$|\r\n$"));
 #ifdef DEBUG_OUTPUT
 			if (!actual)
