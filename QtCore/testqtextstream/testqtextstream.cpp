@@ -48,12 +48,12 @@ void TestQTextStream::readLine()
 		QString str(in.readLine());
 		if (!file.atEnd())
 		{
-			// a string read by qtextstream does not contain newline charactor(s).
+			// The returned line has no trailing end-of-line character(s).
 			bool actual = str.contains(QRegExp("\r$|\n$|\r\n$"));
 #ifdef DEBUG_OUTPUT
 			if (actual)
 			{
-				qDebug() << "contains newline charactor(s) :" << str;
+				qDebug() << "contains end-of-line charactor(s) :" << str;
 			}
 #endif // DEBUG_OUTPUT
 			QCOMPARE(actual, false);
