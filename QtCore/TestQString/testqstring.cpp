@@ -20,7 +20,9 @@ private Q_SLOTS:
 	//void init();
 	//void cleanUp();
 
-private Q_SLOTS:
+	// 170710-S コードを仮移動
+	//void fromLocal8Bit();
+	// 170710-E
 // bool QString::contains ( const QString & str, Qt::CaseSensitivity cs = Qt::CaseSensitive ) const
 	void containsQString();
 	void containsQString_data();
@@ -60,6 +62,23 @@ private Q_SLOTS:
 	void split_rx();
 	void toInt();
 };/*}}}*/
+
+// 170710-S コードを仮移動
+//void TestQString::initTestCase()
+//{
+//	QTextCodec::setCodecForCStrings( QTextCodec::codecForLocale() );
+//	qDebug() << QTextCodec::codecForLocale()->name();
+//	qDebug() << QTextCodec::codecForLocale()->aliases();
+//}
+//// テスト部
+//void TestQString::fromLocal8Bit()
+//{
+//	QString str;
+//	str = QString::fromLocal8Bit("ほげほげほげ");
+//	str = QString::fromAscii("ほげほげほげ");
+//	qDebug() << str;
+//}
+// 170710-E
 
 //void TestQString::toInt_data()
 //{
