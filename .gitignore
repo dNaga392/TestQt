@@ -1,7 +1,6 @@
 # This gitignore based on follows:
 # https://github.com/github/gitignore/blob/master/Qt.gitignore
 # 
-# Thanks for Jake Petroules.
 
 # C++ objects and libs
 
@@ -38,16 +37,15 @@ Makefile*
 *.qmlproject.user
 *.qmlproject.user.*
 
-# =========================
+
+
 # User settings
-# =========================
+#################
+
 # batch files (for debug and release).
 #*.bat
-# debug directory
+
+# Qt-es
 [Dd]ebug/
-# release directory
 [Rr]elease/
-## data directory
-#[Dd]ata/
-# result data directory
-[Rr]esult/
+.qmake.stash
