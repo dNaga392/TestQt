@@ -62,5 +62,19 @@ void TestQTextStream::readLine()
 	file.close();
 }
 
+//int main(int argc, char *argv[])
+//{
+//	QTextCodec::setCodecForCStrings(QTextCodec::codecForLocale());
+//
+//	QFile file("C:\\work\\CheckQTextStream\\test.txt");
+//	if(!file.open(QIODevice::WriteOnly))
+//	{
+//		return 0;
+//	}
+//	QTextStream out(&file);
+//	out << "text" << QString("test") << endl;
+//	return 0;
+//}
+
 QTEST_MAIN(TestQTextStream)
 #include "testqtextstream.moc"
