@@ -63,6 +63,18 @@ private Q_SLOTS:
 	void toInt();
 };/*}}}*/
 
+// 170711-S コードを仮移動
+//int main(int argc, char *argv[])
+//{
+//	//double d = 0.0000000000000000000000000000000003141592653589793238462643383279;
+//	double d = 1.0;
+//	QString str = QString::number(d, 'g', 16);
+//	qDebug() << "number is " << str;
+//	
+//	return 0;
+//}
+// 170711-E
+
 // 170710-S コードを仮移動
 //void TestQString::initTestCase()
 //{
